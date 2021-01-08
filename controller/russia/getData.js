@@ -1,11 +1,11 @@
-import cheerio from 'cheerio';
-import axios from 'axios';
-import is from 'is_js'
+const cheerio = require('cheerio')
+const is = require('is_js')
 
 
-export const getData = response => {
+const getDataRus = response => {
     const $ = cheerio.load(response.data);
     let data = [];
+
     $('.cv-countdown').each(function(){
         $('.cv-countdown__item').each(function(){
             if(is.number(parseInt($('.cv-countdown__item-value',this).text().replace(/\s/g, ''),10)))                  
@@ -18,3 +18,7 @@ export const getData = response => {
     })
     return data
 }
+
+
+module.exports = getDataRus;
+

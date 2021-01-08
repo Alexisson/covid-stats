@@ -1,6 +1,5 @@
 {
   "name": "covidstats",
-  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Ivan Shirokov <ivan.a.shirokov@ya.ru>",
