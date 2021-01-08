@@ -1,10 +1,11 @@
 const express = require('express')
-let russia = require('./Router/russia')
+let world = require('./Router/world')
+let home = require('./Router/home')
 const app = express()
 
 
 
 app
-    .use('/', russia)
-    .all('/', async r=>{r.res.send('Home page')})
+    .use('/', world)
+    .use('/', home)
     .listen(process.env.PORT||5000,()=>console.log(`Server is working on port ${process.env.PORT||5000}`))
