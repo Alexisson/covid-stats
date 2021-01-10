@@ -1,7 +1,6 @@
 const express = require('express')
 const axios = require('axios')
 const getData = require('../controller/getData')
-const fs = require('fs')
 const Stat = require('../models/stat')
 
 
@@ -55,7 +54,6 @@ router
         } catch (error) {
             console.log(error)
         }
-        
     })
 
 

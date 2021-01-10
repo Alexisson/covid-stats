@@ -1,13 +1,15 @@
 const express = require('express')
 let world = require('./Router/world')
 let home = require('./Router/home')
+let getcountrylist = require('./Router/getcountrylist')
 const app = express()
 require('dotenv').config()
 const mongoose = require('mongoose')
 
 app
-    .use('/', world)
     .use('/', home)
+    .use('/country/', world)
+    .use('/setting/', getcountrylist)
     .all(({res:r})=>r.status(404).send('Not Found'))
 
 
