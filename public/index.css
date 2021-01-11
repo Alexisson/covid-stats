@@ -1,0 +1,52 @@
+body {
+  background: linear-gradient(90deg, #5041b2 0%, #7969e6 100%);
+  font-family: "Roboto", sans-serif;
+}
+.content {
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  flex-grow: 1;
+  width: 100%;
+}
+h1 {
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+}
+.data {
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin: 30px;
+  box-sizing: border-box;
+}
+.data-container {
+  justify-content: center;
+}
+.stattable {
+  width: 70%;
+  margin: 10px auto;
+}
+span {
+  font-weight: 700;
+  text-align: center;
+}
+.borderless td,
+.borderless th {
+  border: none;
+}
+.country-list {
+  margin: 20px 0;
+}
+ul {
+  list-style: none;
+}
+ul li a {
+  color: black;
+}
+ul li a:hover {
+  text-decoration: none;
+  color: linear-gradient(90deg, #5041b2 0%, #7969e6 100%);
+}

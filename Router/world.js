@@ -2,14 +2,12 @@ const express = require('express')
 const axios = require('axios')
 const getData = require('../controller/getData')
 const Stat = require('../models/stat')
-
+const Country = require('../models/country')
 
 let router = express.Router()
-const headersHTML = {'Content-Type':'application/json; charset=utf-8'}
 
 router
-    .all('/:country', async (req,res,next)=>{
-        res.set(headersHTML)
+    .all('/:country', async (req,res)=>{
         let country = req.params.country
         if(country==='favicon.ico') return
         country = country[0].toUpperCase()+country.slice(1)
@@ -19,6 +17,7 @@ router
             const response = await axios.get(url)
             const oldStat = await Stat.find({country}).limit(1).sort({$natural:-1})
             let data = getData(response, country)
+            let countryRus = await Country.find({countryURLName: country.toLowerCase()})
             if(oldStat.length===0){
                 const newStat = new Stat({
                     country: data.country,
@@ -48,9 +47,13 @@ router
                     console.log(`Data for country ${country} has been updated`)
                 }
                 else console.log(`Data for country ${country} is actual`)
-            }          
-            res.send(data)
-            next()
+            }
+                      
+            res.render('world',{
+                title: `Статистика по стране: ${data.country}`,
+                data,
+                pageTitle: countryRus[0].countryNameRus
+            })
         } catch (error) {
             console.log(error)
         }
