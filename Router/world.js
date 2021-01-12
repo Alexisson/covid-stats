@@ -3,8 +3,7 @@ const axios = require('axios')
 const getData = require('../controller/getData')
 const Stat = require('../models/stat')
 const Country = require('../models/country')
-
-let router = express.Router()
+const router = express.Router()
 
 router
     .all('/:country', async (req,res)=>{
@@ -17,6 +16,10 @@ router
             const response = await axios.get(url)
             const oldStat = await Stat.find({country}).limit(1).sort({$natural:-1})
             let data = getData(response, country)
+            if(data.total===0){
+                res.render('404')
+                return
+            }
             let countryRus = await Country.find({countryURLName: country.toLowerCase()})
             if(oldStat.length===0){
                 const newStat = new Stat({
@@ -29,7 +32,7 @@ router
                     active: data.active
                 })
                 await newStat.save()
-                console.log(`Data for country ${country} has been added`)
+                console.log(`Данные по стране ${countryRus[0].countryNameRus} добавлены`)
             
             }
             else{
@@ -44,11 +47,10 @@ router
                         active: data.active
                     })
                     await newStat.save()
-                    console.log(`Data for country ${country} has been updated`)
+                    console.log(`Данные по стране ${countryRus[0].countryNameRus} обновлены`)
                 }
-                else console.log(`Data for country ${country} is actual`)
-            }
-                      
+                else console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`)
+            }                   
             res.render('world',{
                 title: `Статистика по стране: ${data.country}`,
                 data,

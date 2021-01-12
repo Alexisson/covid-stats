@@ -25,8 +25,7 @@ app
     .use('/', home)
     .use('/country/', world)
     .use('/settings/', settings)
-    
-    // .all(({res:r})=>r.status(404).render('404'))
+    .use((req,res,next)=>res.status(404).render('404'))
 
 
 async function start() {
