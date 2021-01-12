@@ -1,13 +1,11 @@
-const {Schema, model} = require('mongoose')
+import mongoose from 'mongoose';
 
-const country = new Schema({
+const country = new mongoose.Schema({
     countryNameEng: String,
     countryNameRus: String,
     countryURLName: String,
     countryCode: String
+});
 
 
-})
-
-
-module.exports=model('Country',country)
+export default mongoose.model('Country',country);

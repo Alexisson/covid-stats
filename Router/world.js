@@ -1,26 +1,26 @@
-const express = require('express')
-const axios = require('axios')
-const getData = require('../controller/getData')
-const Stat = require('../models/stat')
-const Country = require('../models/country')
-const router = express.Router()
+import express from 'express';
+import axios from 'axios';
+import { getData } from '../controller/getData.js';
+import Stat from '../models/stat.js';
+import Country from '../models/country.js';
+const router = express.Router();
 
 router
     .all('/:country', async (req,res)=>{
-        let country = req.params.country
-        if(country==='favicon.ico') return
-        country = country[0].toUpperCase()+country.slice(1)
+        let country = req.params.country;
+        if(country==='favicon.ico') return;
+        country = country[0].toUpperCase()+country.slice(1);
         const url = `https://www.worldometers.info/coronavirus/country/${country}/`;
         
         try {
-            const response = await axios.get(url)
-            const oldStat = await Stat.find({country}).limit(1).sort({$natural:-1})
-            let data = getData(response, country)
+            const response = await axios.get(url);
+            const oldStat = await Stat.find({country}).limit(1).sort({$natural:-1});
+            let data = getData(response, country);
             if(data.total===0){
-                res.render('404')
-                return
+                res.render('404');
+                return;
             }
-            let countryRus = await Country.find({countryURLName: country.toLowerCase()})
+            let countryRus = await Country.find({countryURLName: country.toLowerCase()});
             if(oldStat.length===0){
                 const newStat = new Stat({
                     country: data.country,
@@ -30,10 +30,9 @@ router
                     death: data.death,
                     recover: data.recover,
                     active: data.active
-                })
-                await newStat.save()
-                console.log(`Данные по стране ${countryRus[0].countryNameRus} добавлены`)
-            
+                });
+                await newStat.save();
+                console.log(`Данные по стране ${countryRus[0].countryNameRus} добавлены`);           
             }
             else{
                 if(oldStat[0].total!==data.total){
@@ -46,20 +45,18 @@ router
                         recover: data.recover,
                         active: data.active
                     })
-                    await newStat.save()
-                    console.log(`Данные по стране ${countryRus[0].countryNameRus} обновлены`)
+                    await newStat.save();
+                    console.log(`Данные по стране ${countryRus[0].countryNameRus} обновлены`);
                 }
-                else console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`)
+                else console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`);
             }                   
             res.render('world',{
                 title: `Статистика по стране: ${data.country}`,
                 data,
                 pageTitle: countryRus[0].countryNameRus
-            })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     })
-
-
-module.exports = router
+export default router;

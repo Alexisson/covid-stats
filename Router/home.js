@@ -1,20 +1,17 @@
-const express = require('express')
-const axios = require('axios')
-const getData = require('../controller/getData')
-const Stat = require('../models/stat')
-let router = express.Router()
-const Country = require('../models/country')
-const CountriesInColumns = require('../controller/countriesInColumns')
-const headersHTML = {'Content-Type':'text/html; charset=UTF-8'}
+import express from 'express';
+import axios from 'axios';
+import { getData } from '../controller/getData.js';
+import { CountriesInColumns } from '../controller/countriesInColumns.js';
+import Stat from '../models/stat.js';
+import Country from '../models/country.js';
+const router = express.Router();
 
 router
     .all('/',async (req,res)=>{
-
         const url = 'https://www.worldometers.info/coronavirus/';
-        const response = await axios.get(url)
-        const oldStat = await Stat.find({country:"World"}).limit(1).sort({$natural:-1})
-        
-        let data = getData(response)
+        const response = await axios.get(url);
+        const oldStat = await Stat.find({country:"World"}).limit(1).sort({$natural:-1});
+        const data = getData(response);
         if(oldStat.length===0){
             const newStat = new Stat({
                 country: data.country,
@@ -24,14 +21,14 @@ router
                 death: data.death,
                 recover: data.recover,
                 active: data.active
-            })
-            await newStat.save()
-            console.log('Данные по миру добавлены')
+            });
+            await newStat.save();
+            console.log('Данные по миру добавлены');
         }
         else{
             if(oldStat[0].date === data.date){
                 if(oldStat[0].time === data.time){
-                    console.log('Данные по миру актуальны')
+                    console.log('Данные по миру актуальны');
                 }
                 else{
                     const newStat = new Stat({
@@ -42,9 +39,9 @@ router
                         death: data.death,
                         recover: data.recover,
                         active: data.active
-                    })
-                    await newStat.save()
-                    console.log('Данные по миру обновлены')
+                    });
+                    await newStat.save();
+                    console.log('Данные по миру обновлены');
                 }
             }
             else{
@@ -62,7 +59,7 @@ router
             }
         }
         
-        let countries = await Country.find().sort({countryNameRus:1})
+        let countries = await Country.find().sort({countryNameRus:1});
         countries = CountriesInColumns(countries)
         res.render('home',{
             title: 'Главная страница',
@@ -71,8 +68,6 @@ router
             countriescol1: countries[0],
             countriescol2: countries[1],
             countriescol3: countries[2],
-        })
+        });
     })
-
-
-module.exports = router
+export default router;

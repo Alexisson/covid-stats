@@ -2,6 +2,7 @@
   "name": "covidstats",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "author": "Ivan Shirokov <ivan.a.shirokov@ya.ru>",
   "license": "MIT",
   "dependencies": {

@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose')
+import mongoose from 'mongoose';
 
-const stat = new Schema({
+const stat = new mongoose.Schema({
     country: String,
     date: String,
     time: String,
@@ -9,7 +9,6 @@ const stat = new Schema({
     recover: Number,
     active: Number
 
-})
+});
 
-
-module.exports=model('Stat',stat)
+export default mongoose.model('Stat',stat);
