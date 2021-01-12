@@ -18,6 +18,7 @@ const hbs = exphbs.create({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 });
 
+
 app
     .engine('hbs', hbs.engine)
     .set('view engine', 'hbs')

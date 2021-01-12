@@ -15,7 +15,7 @@ export const getData = (response,country=null) => {
         active: 0
     };
     if(!country) data.country = 'World';
-    else data.country=country[0].toUpperCase()+country.slice(1) ;
+    else data.country=country;
     const $ = cheerio.load(response.data);
     
     
@@ -39,7 +39,9 @@ export const getData = (response,country=null) => {
                 data.death=parseInt($('#maincounter-wrap > div',this).text().replace(',','').replace(',',''),10);
             break;
             case 3:
-                data.recover=parseInt($('#maincounter-wrap > div',this).text().replace(',','').replace(',',''),10);
+                if(isNaN(parseInt($('#maincounter-wrap > div',this).text().replace(',','').replace(',',''),10)))
+                data.recover=0;
+                else data.recover = parseInt($('#maincounter-wrap > div',this).text().replace(',','').replace(',',''),10);
             break;
         }
         i+=1;

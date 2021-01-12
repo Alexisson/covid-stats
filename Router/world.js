@@ -14,13 +14,16 @@ router
         
         try {
             const response = await axios.get(url);
-            const oldStat = await Stat.find({country}).limit(1).sort({$natural:-1});
-            let data = getData(response, country);
+            let countryRus = await Country.find({countryURLName: country.toLowerCase()});
+            const countryName = countryRus[0].countryNameEng;
+            const oldStat = await Stat.find({country: countryName}).limit(1).sort({$natural:-1});
+            let data = getData(response, countryName);
+            console.log(data)
             if(data.total===0){
                 res.render('404');
                 return;
             }
-            let countryRus = await Country.find({countryURLName: country.toLowerCase()});
+            
             if(oldStat.length===0){
                 const newStat = new Stat({
                     country: data.country,
@@ -44,12 +47,12 @@ router
                         death: data.death,
                         recover: data.recover,
                         active: data.active
-                    })
+                    });
                     await newStat.save();
                     console.log(`Данные по стране ${countryRus[0].countryNameRus} обновлены`);
                 }
                 else console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`);
-            }                   
+            }                  
             res.render('world',{
                 title: `Статистика по стране: ${data.country}`,
                 data,
