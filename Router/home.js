@@ -12,6 +12,8 @@ router
         const response = await axios.get(url);
         const oldStat = await Stat.find({country:"World"}).limit(1).sort({$natural:-1});
         const data = getData(response);
+        let countries = await Country.find().sort({countryNameRus:1});
+        countries = CountriesInColumns(countries)
         if(oldStat.length===0){
             const newStat = new Stat({
                 country: data.country,
@@ -23,11 +25,27 @@ router
                 active: data.active
             });
             await newStat.save();
+            res.render('home',{
+                title: 'Главная страница',
+                data,
+                pageTitle: 'Статистика по миру',
+                countriescol1: countries[0],
+                countriescol2: countries[1],
+                countriescol3: countries[2],
+            });
             console.log('Данные по миру добавлены');
         }
         else{
             if(oldStat[0].date === data.date){
                 if(oldStat[0].time === data.time){
+                    res.render('home',{
+                        title: 'Главная страница',
+                        data: oldStat[0],
+                        pageTitle: 'Статистика по миру',
+                        countriescol1: countries[0],
+                        countriescol2: countries[1],
+                        countriescol3: countries[2],
+                    });
                     console.log('Данные по миру актуальны');
                 }
                 else{
@@ -41,6 +59,14 @@ router
                         active: data.active
                     });
                     await newStat.save();
+                    res.render('home',{
+                        title: 'Главная страница',
+                        data,
+                        pageTitle: 'Статистика по миру',
+                        countriescol1: countries[0],
+                        countriescol2: countries[1],
+                        countriescol3: countries[2],
+                    });
                     console.log('Данные по миру обновлены');
                 }
             }
@@ -53,21 +79,18 @@ router
                     death: data.death,
                     recover: data.recover,
                     active: data.active
-                })
-                await newStat.save()
+                });
+                await newStat.save();
+                res.render('home',{
+                    title: 'Главная страница',
+                    data,
+                    pageTitle: 'Статистика по миру',
+                    countriescol1: countries[0],
+                    countriescol2: countries[1],
+                    countriescol3: countries[2],
+                });
                 console.log('Данные по миру обновлены')
             }
         }
-        
-        let countries = await Country.find().sort({countryNameRus:1});
-        countries = CountriesInColumns(countries)
-        res.render('home',{
-            title: 'Главная страница',
-            data,
-            pageTitle: 'Статистика по миру',
-            countriescol1: countries[0],
-            countriescol2: countries[1],
-            countriescol3: countries[2],
-        });
     })
 export default router;

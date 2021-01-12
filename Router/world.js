@@ -10,20 +10,17 @@ router
         let country = req.params.country;
         if(country==='favicon.ico') return;
         country = country[0].toUpperCase()+country.slice(1);
-        const url = `https://www.worldometers.info/coronavirus/country/${country}/`;
-        
+        const url = `https://www.worldometers.info/coronavirus/country/${country}/`;      
         try {
             const response = await axios.get(url);
             let countryRus = await Country.find({countryURLName: country.toLowerCase()});
             const countryName = countryRus[0].countryNameEng;
             const oldStat = await Stat.find({country: countryName}).limit(1).sort({$natural:-1});
             let data = getData(response, countryName);
-            console.log(data)
             if(data.total===0){
                 res.render('404');
                 return;
             }
-            
             if(oldStat.length===0){
                 const newStat = new Stat({
                     country: data.country,
@@ -35,6 +32,11 @@ router
                     active: data.active
                 });
                 await newStat.save();
+                res.render('world',{
+                    title: `Статистика по стране: ${data.country}`,
+                    data,
+                    pageTitle: countryRus[0].countryNameRus
+                });
                 console.log(`Данные по стране ${countryRus[0].countryNameRus} добавлены`);           
             }
             else{
@@ -50,14 +52,21 @@ router
                     });
                     await newStat.save();
                     console.log(`Данные по стране ${countryRus[0].countryNameRus} обновлены`);
+                    res.render('world',{
+                        title: `Статистика по стране: ${data.country}`,
+                        data,
+                        pageTitle: countryRus[0].countryNameRus
+                    });
                 }
-                else console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`);
+                else{
+                    console.log(`Данные по стране ${countryRus[0].countryNameRus} актуальны`);
+                    res.render('world',{
+                        title: `Статистика по стране: ${data.country}`,
+                        data: oldStat[0],
+                        pageTitle: countryRus[0].countryNameRus
+                    });
+                } 
             }                  
-            res.render('world',{
-                title: `Статистика по стране: ${data.country}`,
-                data,
-                pageTitle: countryRus[0].countryNameRus
-            });
         } catch (error) {
             console.log(error);
         }
