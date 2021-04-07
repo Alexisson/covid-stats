@@ -60,10 +60,7 @@ router
         const csv = new ObjectsToCsv(output_data);
         await csv.toDisk(`./results/${filename}`);
         const file = `${pathToCsv}/results/${filename}`;
-        res.render("getstatisticscsv", {
-          title: "Экспорт в CSV",
-          file,
-        });
+        return res.download(file).redirect("../");
       })();
     } catch (error) {
       console.log(error);
