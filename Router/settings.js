@@ -5,6 +5,7 @@ import { GetCountryList } from "../controller/getCountryList.js";
 import Country from "../models/country.js";
 import Stat from "../models/stat.js";
 import ObjectsToCsv from "objects-to-csv";
+import experiment from "../controller/experiment.js";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -14,6 +15,10 @@ dotenv.config();
 const router = express.Router();
 
 router
+  .all("/experiment/:num", async (req, res, next) => {
+    let countries = await Country.find().sort({ countryNameRus: 1 });
+    experiment(countries, countries.length / req.params.num, 0);
+  })
   .all("/filtercountrylist/", async (req, res, next) => {
     let countries = await Country.find();
     for (let i = 0; i < countries.length; i++) {
